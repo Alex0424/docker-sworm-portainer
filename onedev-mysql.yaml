@@ -1,0 +1,59 @@
+services:
+  alli_onedev:
+    image: 1dev/server
+    environment:
+      - hibernate_dialect=org.hibernate.dialect.MySQL5InnoDBDialect
+      - hibernate_connection_driver_class=com.mysql.cj.jdbc.Driver
+      - hibernate_connection_url=jdbc:mysql://mysql:3306/onedev?serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false&disableMariaDbDriver=true
+      - hibernate_connection_username=mysql_user579
+      - hibernate_connection_password=${db_pass}
+      - initial_user=admin  # Set the admin username
+      - initial_password=${db_pass}
+      - initial_email=alexander.lindholm@chasacademy.se
+      - initial_server_url=https://alli_onedev.labb.doe23-swarm.chasacademy.dev
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock #$XDG_RUNTIME_DIR/docker.sock for rootless mode
+      - alli_onedevnd_data_onedev:/opt/onedev
+    networks:
+      - traefik-public-2
+      - alli-onedev
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public-2
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.alli_onedev-http.rule=Host(`alli-onedev.labb.doe23-swarm.chasacademy.dev`)
+        - traefik.http.routers.alli_onedev-http.entrypoints=http
+        - traefik.http.routers.alli_onedev-http.middlewares=https-redirect
+        - traefik.http.routers.alli_onedev-https.rule=Host(`alli-onedev.labb.doe23-swarm.chasacademy.dev`)
+        - traefik.http.routers.alli_onedev-https.entrypoints=https
+        - traefik.http.routers.alli_onedev-https.tls=true
+        - traefik.http.routers.alli_onedev-https.tls.certresolver=le
+        - traefik.http.services.alli_onedev.loadbalancer.server.port=6610 # try 6610 if https doesent work
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${db_pass}
+      MYSQL_DATABASE: onedev
+      MYSQL_USER: mysql_user579
+      MYSQL_PASSWORD: ${db_pass}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+    - alli-onedev
+
+
+networks:
+  traefik-public-2:
+    external: true
+  alli-onedev:
+    driver: overlay
+
+volumes:
+  mysql_data:
+  alli_onedevnd_data_onedev:
