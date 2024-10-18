@@ -1,0 +1,86 @@
+services:
+
+####################################################################################################
+
+  alli_wordpress:
+    image: wordpress
+    environment:
+      - WORDPRESS_DB_HOST=alli_mariadb
+      - WORDPRESS_DB_PASSWORD=${wp_pass}
+      - WORDPRESS_DB_USER=root
+      - WORDPRESS_DB_NAME=alli_wordpress
+
+    volumes:
+      - alli_html:/var/www/html
+    networks:
+      - traefik-public-2
+      - alli-wordpress
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public-2
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.alli_wordpress-http.rule=Host(`alli-wordpress.labb.doe23-swarm.chasacademy.dev`)
+        - traefik.http.routers.alli_wordpress-http.entrypoints=http
+        - traefik.http.routers.alli_wordpress-http.middlewares=https-redirect
+        - traefik.http.routers.alli_wordpress-https.rule=Host(`alli-wordpress.labb.doe23-swarm.chasacademy.dev`)
+        - traefik.http.routers.alli_wordpress-https.entrypoints=https
+        - traefik.http.routers.alli_wordpress-https.tls=true
+        - traefik.http.routers.alli_wordpress-https.tls.certresolver=le
+        - traefik.http.services.alli_wordpress.loadbalancer.server.port=80
+
+####################################################################################################
+
+  alli_mariadb:
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=${db_pass}
+      - MYSQL_DATABASE=alli_wordpress
+    volumes:
+      - alli_database:/var/lib/mysql
+    networks:
+      - alli-wordpress
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public-2
+        - traefik.constraint-label=traefik-public
+
+####################################################################################################
+
+  alli_adminer:
+    image: adminer:latest
+    networks:
+    - traefik-public-2
+    - alli-wordpress
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public-2
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.alli_adminer-http.rule=Host(`alli-adminer.labb.doe23-swarm.chasacademy.dev`)
+        - traefik.http.routers.alli_adminer-http.entrypoints=http
+        - traefik.http.routers.alli_adminer-http.middlewares=https-redirect
+        - traefik.http.routers.alli_adminer-https.rule=Host(`alli-adminer.labb.doe23-swarm.chasacademy.dev`)
+        - traefik.http.routers.alli_adminer-https.entrypoints=https
+        - traefik.http.routers.alli_adminer-https.tls=true
+        - traefik.http.routers.alli_adminer-https.tls.certresolver=le
+        - traefik.http.services.alli_adminer.loadbalancer.server.port=8080
+
+####################################################################################################
+
+networks:
+  traefik-public-2:
+    external: true
+  alli-wordpress:
+    driver: overlay
+
+volumes:
+  alli_html:
+  alli_database:
