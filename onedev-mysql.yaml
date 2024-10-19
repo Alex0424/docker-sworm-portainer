@@ -32,7 +32,7 @@ services:
         - traefik.http.routers.alli_onedev-https.entrypoints=https
         - traefik.http.routers.alli_onedev-https.tls=true
         - traefik.http.routers.alli_onedev-https.tls.certresolver=le
-        - traefik.http.services.alli_onedev.loadbalancer.server.port=6610 # try 6610 if https doesent work
+        - traefik.http.services.alli_onedev.loadbalancer.server.port=6610 # HTTP/HTTPS
         # SSH routing
         - traefik.tcp.routers.onedev-ssh.rule=HostSNI(`*`)
         - traefik.tcp.routers.onedev-ssh.entrypoints=ssh  # ssh: entrypoint in Traefik
