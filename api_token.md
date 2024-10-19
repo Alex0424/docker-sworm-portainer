@@ -1,10 +1,13 @@
-# Deploy a stack in sworm portainer with docker-compose file
+# API with sworm portainer
 
+## API with a token is usefull becouse then you can deploy/delete/modify your stacks
 
-Access api in order to have deploy/delete access e.g.:
+### how to get an API token:
 ```
 curl "https://portainer.labb.doe23-swarm.chasacademy.dev/api/auth" -X POST --data "{\"username\": \"$portainer_username\", \"password\": \"$portainer_password\"}"
 ```
+
+### EXAMPLE: how to use API with a token:
 ```
 curl "https://portainer.labb.doe23-swarm.chasacademy.dev/api/stacks" -X GET -H "authorization: Bearer $token" | jq
 ```
