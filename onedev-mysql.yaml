@@ -35,7 +35,7 @@ services:
         - traefik.http.services.alli_onedev.loadbalancer.server.port=6610 # try 6610 if https doesent work
         # SSH routing
         - traefik.tcp.routers.onedev-ssh.rule=HostSNI(`*`)
-        - traefik.tcp.routers.onedev-ssh.entrypoints=ssh  # i belive 'ssh' is defined as an entrypoint in Traefik
+        - traefik.tcp.routers.onedev-ssh.entrypoints=ssh  # ssh: entrypoint in Traefik
         - traefik.tcp.routers.onedev-ssh.service=onedev-ssh-service
         - traefik.tcp.services.onedev-ssh-service.loadbalancer.server.port=6611  # OneDev SSH port
     depends_on:
