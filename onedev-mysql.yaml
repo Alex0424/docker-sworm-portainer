@@ -34,10 +34,10 @@ services:
         - traefik.http.routers.alli_onedev-https.tls.certresolver=le
         - traefik.http.services.alli_onedev.loadbalancer.server.port=6610 # try 6610 if https doesent work
         # SSH routing
-        - traefik.tcp.routers.onedev-ssh.rule=HostSNI(`*`)  # Or specify the domain if needed
-        - traefik.tcp.routers.onedev-ssh.entrypoints=ssh  # Assuming 'ssh' is defined as an entrypoint in Traefik
+        - traefik.tcp.routers.onedev-ssh.rule=HostSNI(`*`)
+        - traefik.tcp.routers.onedev-ssh.entrypoints=ssh  # i belive 'ssh' is defined as an entrypoint in Traefik
         - traefik.tcp.routers.onedev-ssh.service=onedev-ssh-service
-        - traefik.tcp.services.onedev-ssh-service.loadbalancer.server.port=6611  # OneDev's SSH port
+        - traefik.tcp.services.onedev-ssh-service.loadbalancer.server.port=6611  # OneDev SSH port
     depends_on:
       - mysql
 
