@@ -12,7 +12,7 @@ services:
       - initial_email=alexander.lindholm@chasacademy.se
       - initial_server_url=https://alli_onedev.labb.doe23-swarm.chasacademy.dev
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock #$XDG_RUNTIME_DIR/docker.sock for rootless mode
+      - /var/run/docker.sock:/var/run/docker.sock # USE: $XDG_RUNTIME_DIR/docker.sock for rootless mode
       - alli_onedevnd_data_onedev:/opt/onedev
     networks:
       - traefik-public-2
