@@ -11,3 +11,6 @@ curl "https://portainer.labb.doe23-swarm.chasacademy.dev/api/auth" -X POST --dat
 ```
 curl "https://portainer.labb.doe23-swarm.chasacademy.dev/api/stacks" -X GET -H "authorization: Bearer $token" | jq
 ```
+
+### All Portainer API's commands:
+https://app.swaggerhub.com/apis/portainer/portainer-ce/2.21.3#/stacks/StackCreateDockerStandaloneFile
