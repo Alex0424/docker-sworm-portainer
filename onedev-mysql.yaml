@@ -24,6 +24,7 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public-2
         - traefik.constraint-label=traefik-public
+        # HTTP routing
         - traefik.http.routers.alli_onedev-http.rule=Host(`alli-onedev.labb.doe23-swarm.chasacademy.dev`)
         - traefik.http.routers.alli_onedev-http.entrypoints=http
         - traefik.http.routers.alli_onedev-http.middlewares=https-redirect
@@ -32,6 +33,11 @@ services:
         - traefik.http.routers.alli_onedev-https.tls=true
         - traefik.http.routers.alli_onedev-https.tls.certresolver=le
         - traefik.http.services.alli_onedev.loadbalancer.server.port=6610 # try 6610 if https doesent work
+        # SSH routing
+        - traefik.tcp.routers.onedev-ssh.rule=HostSNI(`*`)  # Or specify the domain if needed
+        - traefik.tcp.routers.onedev-ssh.entrypoints=ssh  # Assuming 'ssh' is defined as an entrypoint in Traefik
+        - traefik.tcp.routers.onedev-ssh.service=onedev-ssh-service
+        - traefik.tcp.services.onedev-ssh-service.loadbalancer.server.port=6611  # OneDev's SSH port
     depends_on:
       - mysql
 
