@@ -2,6 +2,18 @@ services:
 
 ####################################################################################################
 
+  alli_mariadb:
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=${db_pass}
+      - MYSQL_DATABASE=alli_wordpress
+    volumes:
+      - alli_database:/var/lib/mysql
+    networks:
+      - alli-wordpress
+
+####################################################################################################
+
   alli_wordpress:
     image: wordpress
     environment:
@@ -9,12 +21,11 @@ services:
       - WORDPRESS_DB_PASSWORD=${wp_pass}
       - WORDPRESS_DB_USER=root
       - WORDPRESS_DB_NAME=alli_wordpress
-
     volumes:
       - alli_html:/var/www/html
     networks:
-      - traefik-public-2
       - alli-wordpress
+      - traefik-public-2
     deploy:
       placement:
         constraints: [node.role == worker]
@@ -30,26 +41,7 @@ services:
         - traefik.http.routers.alli_wordpress-https.tls=true
         - traefik.http.routers.alli_wordpress-https.tls.certresolver=le
         - traefik.http.services.alli_wordpress.loadbalancer.server.port=80
-
-####################################################################################################
-
-  alli_mariadb:
-    image: mariadb
-    environment:
-      - MYSQL_ROOT_PASSWORD=${db_pass}
-      - MYSQL_DATABASE=alli_wordpress
-    volumes:
-      - alli_database:/var/lib/mysql
-    networks:
-      - alli-wordpress
-    deploy:
-      placement:
-        constraints: [node.role == worker]
-      labels:
-        - traefik.enable=true
-        - traefik.docker.network=traefik-public-2
-        - traefik.constraint-label=traefik-public
-
+        
 ####################################################################################################
 
   alli_adminer:
