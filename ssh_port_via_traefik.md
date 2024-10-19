@@ -16,7 +16,7 @@ add this labels blocks to docker-compose file(under onedev service):
 ```
 labels:
       - traefik.enable=true
-      - traefik.tcp.routers.onedev-ssh.rule=HostSNI(`*`)  # allow all(*) Or specify a domain
+      - traefik.tcp.routers.onedev-ssh.rule=HostSNI(`*`)
       - traefik.tcp.routers.onedev-ssh.entrypoints=ssh  # add ssh in entrypoint in Traefik see below
       - traefik.tcp.routers.onedev-ssh.service=onedev-ssh-service
       - traefik.tcp.services.onedev-ssh-service.loadbalancer.server.port=6611  # OneDev SSH port
@@ -30,7 +30,7 @@ labels:
 tcp:
   routers:
     onedev-ssh:
-      rule: "HostSNI(`*`)"  # Replace * with the actual host if needed
+      rule: "HostSNI(`*`)" 
       entryPoints: "ssh"
       service: onedev-ssh-service
 
